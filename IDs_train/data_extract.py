@@ -42,13 +42,25 @@ class DataExtract:
             id_data = parts[3]  # seleciona a parte do id e campo de dados
             if id_data == 'T':
                 parts[3] = attack_type
-                
             else:
                 parts[3] = 'benign'
                 
             labeled_line = ' '.join(parts)
             labeled_data.append(labeled_line)
-        return labeled_data
+        
+        # Separar ID e Dados
+        separated_data = []
+        for labeled_line in labeled_data:
+            parts = labeled_line.split()
+            id_data = parts[2]
+            if '#' in id_data:
+                id_part, data_part = id_data.split('#')
+                new_line = f"{parts[0]} {parts[1]} {id_part} {data_part} {parts[3]}"
+                separated_data.append(new_line)
+            else:
+                separated_data.append(labeled_line)  # caso não tenha '#', adicionar a linha como está
+        
+        return separated_data
 
 
     def save_labeled_data(self, output_file, labeled_data):
